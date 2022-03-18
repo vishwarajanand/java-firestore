@@ -1137,4 +1137,20 @@ public class DocumentReferenceTest {
     assertEquals(FOO_MAP, customMap.fooMap);
     assertEquals(SINGLE_FIELD_OBJECT, customMap.fooMap.get("customMap"));
   }
+
+  @Test
+  public void setDocumentWithUpdateTime() throws Exception {
+    doReturn(SINGLE_WRITE_COMMIT_RESPONSE)
+        .when(firestoreMock)
+        .sendRequest(
+            commitCapture.capture(), Matchers.<UnaryCallable<CommitRequest, CommitResponse>>any());
+
+    documentReference.set(SINGLE_FIELD_MAP, SetOptions.updateTime(Timestamp.ofTimeSecondsAndNanos(1, 2))).get();
+
+    CommitRequest expectedCommit = commit(set(SINGLE_FIELD_PROTO, Arrays.asList("foo")));
+
+    for (int i = 0; i < 5; ++i) {
+      assertCommitEquals(expectedCommit, commitCapture.getAllValues().get(i));
+    }
+  }
 }

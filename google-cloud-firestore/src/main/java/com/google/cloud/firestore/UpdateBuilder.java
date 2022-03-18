@@ -280,6 +280,10 @@ public abstract class UpdateBuilder<T> {
       write.setUpdateMask(documentMask.toPb());
     }
 
+    if (options.getUpdateTime() != null) {
+      write.getCurrentDocumentBuilder().setUpdateTime(options.getUpdateTime().toProto());
+    }
+
     writes.add(new WriteOperation(documentReference, write));
 
     return wrapResult(writes.size() - 1);

@@ -16,6 +16,7 @@
 
 package com.google.cloud.firestore;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.UserDataConverter.EncodingOptions;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.checkerframework.checker.units.qual.N;
 
 /**
  * An options object that configures the behavior of set() calls. By providing one of the SetOptions
@@ -32,17 +34,19 @@ import javax.annotation.Nullable;
  */
 public final class SetOptions {
 
-  static final SetOptions OVERWRITE = new SetOptions(false, null);
-  private static final SetOptions MERGE_ALL_FIELDS = new SetOptions(true, null);
+  static final SetOptions OVERWRITE = new SetOptions(false, null, null);
+  private static final SetOptions MERGE_ALL_FIELDS = new SetOptions(true, null, null);
 
   private final boolean merge;
   @Nullable private final List<FieldPath> fieldMask;
+  @Nullable private final Timestamp updateTime;
 
-  private SetOptions(boolean merge, @Nullable List<FieldPath> fieldMask) {
+  private SetOptions(boolean merge, @Nullable List<FieldPath> fieldMask, @Nullable Timestamp updateTime) {
     Preconditions.checkArgument(
         fieldMask == null || merge, "Cannot specify a fieldMask for non-merge sets()");
     this.merge = merge;
     this.fieldMask = fieldMask;
+    this.updateTime = updateTime;
   }
 
   boolean isMerge() {
@@ -52,6 +56,11 @@ public final class SetOptions {
   @Nullable
   List<FieldPath> getFieldMask() {
     return fieldMask;
+  }
+
+  @Nullable
+  Timestamp getUpdateTime() {
+    return updateTime;
   }
 
   /**
@@ -81,7 +90,7 @@ public final class SetOptions {
       fieldPaths.add(FieldPath.fromDotSeparatedString(field));
     }
 
-    return new SetOptions(true, fieldPaths);
+    return new SetOptions(true, fieldPaths, null);
   }
 
   /**
@@ -102,7 +111,7 @@ public final class SetOptions {
       fieldPaths.add(FieldPath.fromDotSeparatedString(field));
     }
 
-    return new SetOptions(true, fieldPaths);
+    return new SetOptions(true, fieldPaths, null);
   }
 
   /**
@@ -116,7 +125,12 @@ public final class SetOptions {
    */
   @Nonnull
   public static SetOptions mergeFieldPaths(List<FieldPath> fields) {
-    return new SetOptions(true, fields);
+    return new SetOptions(true, fields, null);
+  }
+
+  @Nonnull
+  public static SetOptions updateTime(Timestamp updateTime) {
+    return new SetOptions(false, null, updateTime);
   }
 
   /** Returns the EncodingOptions to use for a set() call. */
@@ -155,11 +169,11 @@ public final class SetOptions {
       return false;
     }
     SetOptions that = (SetOptions) obj;
-    return merge == that.merge && Objects.equals(fieldMask, that.fieldMask);
+    return merge == that.merge && Objects.equals(fieldMask, that.fieldMask) && Objects.equals(updateTime, that.updateTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(merge, fieldMask);
+    return Objects.hash(merge, fieldMask, updateTime);
   }
 }
