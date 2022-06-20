@@ -16,26 +16,10 @@
 
 package com.google.cloud.firestore;
 
-import com.google.cloud.Timestamp;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public interface AggregateQuerySnapshot {
+public interface AggregateQuerySnapshot extends AggregateSnapshot {
 
   @Nonnull
   AggregateQuery getQuery();
-
-  @Nonnull
-  Timestamp getReadTime();
-
-  @Nullable
-  Long getCount();
-
-  @Override
-  boolean equals(Object obj);
-
-  @Override
-  int hashCode();
-
 }

@@ -16,28 +16,31 @@
 
 package com.google.cloud.firestore;
 
-import com.google.api.core.ApiFuture;
-import java.util.concurrent.Executor;
+import com.google.cloud.Timestamp;
+import java.util.List;
 import javax.annotation.Nonnull;
 
-public interface AggregateQuery {
+public interface GroupByQuerySnapshot extends Iterable<GroupSnapshot> {
 
   @Nonnull
-  Query getQuery();
+  GroupByQuery getQuery();
 
   @Nonnull
-  ApiFuture<AggregateQuerySnapshot> get();
+  Timestamp getReadTime();
 
   @Nonnull
-  ListenerRegistration addSnapshotListener(@Nonnull EventListener<AggregateQuerySnapshot> listener);
+  List<GroupSnapshot> getGroups();
 
   @Nonnull
-  ListenerRegistration addSnapshotListener(
-      @Nonnull Executor executor, @Nonnull EventListener<AggregateQuerySnapshot> listener);
+  List<GroupChange> getGroupChanges();
 
-  @Override
-  int hashCode();
+  boolean isEmpty();
+
+  int size();
 
   @Override
   boolean equals(Object obj);
+
+  @Override
+  int hashCode();
 }

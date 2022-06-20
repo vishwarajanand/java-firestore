@@ -195,4 +195,9 @@ public final class Transaction extends UpdateBuilder<Transaction> {
   public ApiFuture<AggregateQuerySnapshot> get(@Nonnull AggregateQuery query) {
     throw new RuntimeException("not implemented");
   }
+
+  @Nonnull
+  public ApiFuture<GroupByQuerySnapshot> get(@Nonnull GroupByQuery query) {
+    throw new RuntimeException("not implemented");
+  }
 }

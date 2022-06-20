@@ -1762,7 +1762,24 @@ public class Query {
   }
 
   @Nonnull
+  public AggregateQuery aggregate(
+      @Nonnull AggregateField field, @Nonnull AggregateField... fields) {
+    throw new RuntimeException("not implemented");
+  }
+
+  // A convenience method for just getting the count of a query.
+  // This method also helps with visibility of the "count" feature, since "aggregate" is
+  // less obvious what you can do with it.
+  @Nonnull
   public AggregateQuery count() {
+    return aggregate(AggregateField.count());
+  }
+
+  public GroupByQuery groupBy(@Nonnull String field1, @Nonnull String... fields) {
+    throw new RuntimeException("not implemented");
+  }
+
+  public GroupByQuery groupBy(@Nonnull FieldPath field1, @Nonnull FieldPath... fields) {
     throw new RuntimeException("not implemented");
   }
 

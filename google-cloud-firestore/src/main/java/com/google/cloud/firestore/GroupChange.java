@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,29 @@
 
 package com.google.cloud.firestore;
 
-import com.google.api.core.ApiFuture;
-import java.util.concurrent.Executor;
 import javax.annotation.Nonnull;
 
-public interface AggregateQuery {
+public interface GroupChange {
+
+  enum Type {
+    ADDED,
+    MODIFIED,
+    REMOVED
+  }
 
   @Nonnull
-  Query getQuery();
+  Type getType();
 
   @Nonnull
-  ApiFuture<AggregateQuerySnapshot> get();
+  GroupSnapshot getGroup();
 
-  @Nonnull
-  ListenerRegistration addSnapshotListener(@Nonnull EventListener<AggregateQuerySnapshot> listener);
+  int getOldIndex();
 
-  @Nonnull
-  ListenerRegistration addSnapshotListener(
-      @Nonnull Executor executor, @Nonnull EventListener<AggregateQuerySnapshot> listener);
-
-  @Override
-  int hashCode();
+  int getNewIndex();
 
   @Override
   boolean equals(Object obj);
+
+  @Override
+  int hashCode();
 }
